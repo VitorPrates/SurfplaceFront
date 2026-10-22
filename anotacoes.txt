@@ -1,0 +1,17 @@
+como instalar o tailwind:
+npm install tailwindcss @tailwindcss/vite
+
+vite.config.js:
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite' // Adicione esta linha
+
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(), // Adicione esta linha aqui
+  ],
+})
+
+no index.css e app.css:
+@import "tailwindcss";

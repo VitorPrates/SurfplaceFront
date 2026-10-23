@@ -5,6 +5,7 @@ import './App.css'; // Onde está o estilo .leaflet-container com a altura
 import Header from './componentes/Header';
 
 
+
 export default function Mapa() {
   // Coordenadas iniciais do centro do mapa (Exemplo: Avenida Paulista, São Paulo)
   const posicaoInicial = [-23.561684, -46.655981];

@@ -5,18 +5,25 @@ import * as Icons from "react-bootstrap-icons"
 export default function Header()
 {
     return(<>
-    <header className="bg-azulforte h-20 flex items-center relative overflow-hidden">
+    <header className="bg-azulforte h-25 flex items-center relative overflow-hidden">
         <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute left-[-50px]"></span>
         <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute left-[-100px]"></span>
         <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute right-[-50px]"></span>
         <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute right-[-100px]"></span>
         
         
-        <div className="flex items-center w-fit m-auto">
+        <div className="flex items-center w-fit m-auto gap-[58px]">
             <div className="h-full w-fit">
-                <div className="logo w-[85px]"><img src={logo} alt="logo surflace" className=""/></div>
+                <div className="logo w-[80px]"><img src={logo} alt="logo surflace" className=""/></div>
             </div>
-            <Icons.Search className="text-white rotate-y-180" size={40}/>
+            <form action="" className="flex gap-5 items-center">
+                <Icons.Search className="text-white rotate-y-180" size={40}/>
+                <input type="text" className="bg-white rounded-2xl w-132.5 h-7.5 pl-3 pr-3"/>
+            </form>
+            <nav>
+                <a href="" className="font-bold text-amarelodestaque text-[30px]">Login</a>
+                
+            </nav>
         </div>'
         {/* <a href="" className="text-amarelodestaque font-bold text-[30px]">Login</a> */}
 

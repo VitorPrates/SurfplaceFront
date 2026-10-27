@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 
 
@@ -56,7 +56,7 @@ export default function Navegador()
 
 
     return(<>
-        <div className="absolute bg-azulultraleve w-95 h-75 top-0 z-999 rounded-br-2xl border-r-2 border-b-2 ">
+        <div className="absolute bg-azulultraleve w-95 h-75 top-25 z-999 rounded-br-2xl border-r-2 border-b-2 ">
             <form action="" className="flex flex-col items-center justify-center w-full h-full" onSubmit={handleSubmit}>
                 <label htmlFor="local" className="text-[30px]">Sua localização:</label>
                 <input type="text" value={texto} placeholder="Pesquise e digite enter" onChange={(e) => setTexto(e.target.value)} name="buscaendereco" className="w-82.5 h-10 bg-white rounded-3xl border pl-5 pr-5"/>

@@ -13,8 +13,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#dbe7fd] flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-slate-700 p-8 shadow-sm">
+    <div className="h-[calc(100dvh-170px)] w-full bg-[#dbe7fd] flex items-center justify-center p-4 font-sans">
+      <div className=" bg-white rounded border-2 w-125 h-117.5 pl-5 pr-5 pt-6.25">
         {submitted ? (
           <div className="text-center py-6 space-y-4">
             <div className="w-12 h-12 bg-sky-100 text-[#00aeeef] rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
@@ -36,12 +36,12 @@ export default function Login() {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+          <form onSubmit={handleSubmit} className="flex flex-col ">
             {/* Campo E-mail ou Telefone */}
-            <div className="flex flex-col space-y-1.5">
+            <div className="flex flex-col">
               <label 
                 htmlFor="emailOrPhone" 
-                className="text-lg text-slate-800 font-normal tracking-wide pl-1"
+                className="text-[32px] tracking-wide m-0 font-light"
               >
                 E-mail ou telefone
               </label>
@@ -51,15 +51,15 @@ export default function Login() {
                 value={emailOrPhone}
                 onChange={(e) => setEmailOrPhone(e.target.value)}
                 required
-                className="w-full h-10 px-4 rounded-full border border-slate-600 outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all text-slate-800 text-sm"
+                className="w-full h-10  rounded-full border outline-none"
               />
             </div>
 
             {/* Campo Senha */}
-            <div className="flex flex-col space-y-1.5">
+            <div className="flex flex-col ">
               <label 
                 htmlFor="password" 
-                className="text-lg text-slate-800 font-normal tracking-wide pl-1"
+                className="text-[32px] pl-1 font-light mt-2"
               >
                 Senha
               </label>
@@ -76,7 +76,7 @@ export default function Login() {
                 <a
                   href="#forgot-password"
                   onClick={(e) => e.preventDefault()}
-                  className="text-[11px] text-[#29b6f6] hover:underline"
+                  className="text-[16px] text-azulleve hover:underline"
                 >
                   Esqueceu sua senha?
                 </a>
@@ -84,11 +84,11 @@ export default function Login() {
             </div>
 
             {/* Link Não possui cadastro */}
-            <div className="pt-3 text-center">
+            <div className="mt-20 mb-3 text-center">
               <a
                 href="#register"
                 onClick={(e) => e.preventDefault()}
-                className="text-lg font-normal text-[#29b6f6] hover:underline"
+                className="text-[32px]  font-normal text-azulleve hover:underline"
               >
                 Não possui cadastro?
               </a>
@@ -97,8 +97,7 @@ export default function Login() {
             {/* Botão Continuar */}
             <button
               type="submit"
-              className="w-full py-2.5 px-4 bg-[#14b8a6] hover:bg-[#0d9488] text-white text-lg font-medium rounded-lg transition-colors shadow-sm active:scale-[0.99] transition-transform"
-              style={{ backgroundColor: '#18b8eb' }}
+              className="w-full mb-0 bg-azulleve text-white text-[32px] font-medium rounded-lg shadow-sm active:scale-[0.99] transition-transform"
             >
               Continuar
             </button>

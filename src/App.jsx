@@ -7,6 +7,7 @@ import Footer from './componentes/Footer';
 import Navegador from './componentes/Navegador';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Login from './componentes/Login';
+import Cadastro_user from './componentes/Cadastro_user';
 // import { Link } from "react-router-dom"
 
 
@@ -24,6 +25,7 @@ export default function Mapa() {
             <Route path="/" element={ <Navegador/>} />
             
             <Route path="/login" element={<Login/>} /> 
+            <Route path="/Cadastro_user" element={<Cadastro_user/>} /> 
           </Routes>
 
           </main>

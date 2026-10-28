@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from "react-router-dom"
 
 export default function Login() {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -13,7 +14,7 @@ export default function Login() {
   };
 
   return (
-    <div className="h-[calc(100dvh-170px)] w-full bg-[#dbe7fd] flex items-center justify-center p-4 font-sans">
+    <div className="h-[calc(100dvh-170px)] w-full bg-azulultraleve flex items-center justify-center p-4 font-sans">
       <div className=" bg-white rounded border-2 w-125 h-117.5 pl-5 pr-5 pt-6.25">
         {submitted ? (
           <div className="text-center py-6 space-y-4">
@@ -30,7 +31,7 @@ export default function Login() {
                 setEmailOrPhone('');
                 setPassword('');
               }}
-              className="mt-4 text-xs text-[#29b6f6] underline hover:text-[#0288d1] transition-colors"
+              className="mt-4 text-xs text-azulleve underline transition-colors"
             >
               Voltar ao formulário
             </button>
@@ -41,7 +42,7 @@ export default function Login() {
             <div className="flex flex-col">
               <label 
                 htmlFor="emailOrPhone" 
-                className="text-[32px] tracking-wide m-0 font-light"
+                className="text-[32px] tracking-wide m-0  font-light"
               >
                 E-mail ou telefone
               </label>
@@ -51,7 +52,7 @@ export default function Login() {
                 value={emailOrPhone}
                 onChange={(e) => setEmailOrPhone(e.target.value)}
                 required
-                className="w-full h-10  rounded-full border outline-none"
+                className="w-full h-10 px-4 rounded-full border outline-none"
               />
             </div>
 
@@ -90,7 +91,7 @@ export default function Login() {
                 onClick={(e) => e.preventDefault()}
                 className="text-[32px]  font-normal text-azulleve hover:underline"
               >
-                Não possui cadastro?
+                <Link to={"/Cadastro_user"}>Não possui cadastro?</Link>
               </a>
             </div>
 

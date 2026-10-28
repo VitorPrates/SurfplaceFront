@@ -1,9 +1,14 @@
 import logo from "../assets/logo-sem-fundo.png"
 import * as Icons from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
+import { useAuth } from './VerificadorLogin.jsx';
 
 export default function Header()
 {
+    const { user, loading } = useAuth();
+
+    if (loading) return <p>Carregando...</p>;
+
     return(<>
     <header className="bg-azulforte h-25 flex items-center relative overflow-hidden">
         <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute left-[-50px]"></span>
@@ -23,7 +28,8 @@ export default function Header()
             </form>
             <nav>
                 {/* <a href="" className="font-bold text-amarelodestaque text-[30px]">Login</a> */}
-                <Link to={"/Login"} className="font-bold text-amarelodestaque text-[30px]">Login</Link>
+                {user ? `Olá ${user}!` : <Link to={"/Login"} className="font-bold text-amarelodestaque text-[30px]">Login</Link>}
+                
             </nav>
         </div>'
         {/* <a href="" className="text-amarelodestaque font-bold text-[30px]">Login</a> */}

@@ -79,11 +79,11 @@ export default function Navegador()
             attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-          <ChangeView center={coordenadas} zoom={13} />
+          <ChangeView center={coordenadas} zoom={15} />
           {/* Marcador no mapa */}
           <Marker position={posicaoInicial}>
             <Popup>
-              Avenida Paulista, São Paulo - SP
+              Aqui seria uma loja Exemplo!
             </Popup>
           </Marker>
         </MapContainer>

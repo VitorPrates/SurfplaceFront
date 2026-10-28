@@ -70,7 +70,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-10 px-4 rounded-full border border-slate-600 outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all text-slate-800 text-sm"
+                className="w-full h-10 px-4 rounded-full border outline-none  transition-all text-sm"
               />
               {/* Link Esqueceu sua senha */}
               <div className="pt-0.5 pl-1">
@@ -98,7 +98,7 @@ export default function Login() {
             {/* Botão Continuar */}
             <button
               type="submit"
-              className="w-full mb-0 bg-azulleve text-white text-[32px] font-medium rounded-lg shadow-sm active:scale-[0.99] transition-transform"
+              className="w-full mb-0 bg-azulleve cursor-pointer text-white text-[32px] font-medium rounded-lg shadow-sm active:scale-[0.99] transition-transform"
             >
               Continuar
             </button>

@@ -1,4 +1,5 @@
 import * as Icons from "react-bootstrap-icons"
+import { Link } from "react-router-dom"
 
 export default function Bemvindo()
 {
@@ -17,7 +18,8 @@ export default function Bemvindo()
                 <p className="text-[24px] pl-4.5 pr-4.5 pt-3 ">
                     O mapa tem como função demonstar as lojas de acordo com as <span className="font-bold">localizações que você pesquisar.</span> Caso existam lojas próximas da localização pesquisada, elas aparecerão no mapa, clicáveis para você dar uma olhada!
                 </p>
-                <button className="flex items-center gap-1 bg-azulforte text-white font-bold text-[27px] rounded-3xl justify-center w-100 h-12.5 m-auto">Ver mapa<Icons.ArrowRight/></button>
+                
+                <Link to={"/home"} className="m-auto"><button className="flex items-center gap-1 bg-azulforte text-white font-bold text-[27px] rounded-3xl justify-center w-100 h-12.5  cursor-pointer">Ver mapa<Icons.ArrowRight/></button></Link>
             </article>
         </div>
     </>)

@@ -56,37 +56,38 @@ export default function Navegador()
 
 
     return(<>
-        <div className="absolute bg-azulultraleve w-95 h-75 top-25 z-999 rounded-br-2xl border-r-2 border-b-2 ">
-            <form action="" className="flex flex-col items-center justify-center w-full h-full" onSubmit={handleSubmit}>
-                <label htmlFor="local" className="text-[30px]">Sua localização:</label>
-                <input type="text" value={texto} placeholder="Pesquise e digite enter" onChange={(e) => setTexto(e.target.value)} name="buscaendereco" className="w-82.5 h-10 bg-white rounded-3xl border pl-5 pr-5"/>
-                {coordenadas && (
-                <p className="text-center mt-2 text-sm">
-                    Lat: {coordenadas.lat} | Lon: {coordenadas.lon}
-                </p>)}
-                {errocoordenada? <p>Não encontrado</p> : ""}
-            </form>
- 
+        <div>
+            <div className="absolute bg-azulultraleve w-95 h-75 top-25 z-999 rounded-br-2xl border-r-2 border-b-2 ">
+                <form action="" className="flex flex-col items-center justify-center w-full h-full" onSubmit={handleSubmit}>
+                    <label htmlFor="local" className="text-[30px]">Sua localização:</label>
+                    <input type="text" value={texto} placeholder="Pesquise e digite enter" onChange={(e) => setTexto(e.target.value)} name="buscaendereco" className="w-82.5 h-10 bg-white rounded-3xl border pl-5 pr-5"/>
+                    {coordenadas && (
+                    <p className="text-center mt-2 text-sm">
+                        Lat: {coordenadas.lat} | Lon: {coordenadas.lon}
+                    </p>)}
+                    {errocoordenada? <p>Não encontrado</p> : ""}
+                </form>
+            </div>
+            <MapContainer 
+            center={coordenadas} 
+            zoom={13} 
+            scrollWheelZoom={true}
+            >
+            {/* Camada de dados do OpenStreetMap */}
+            
+            <TileLayer
+                attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+            <ChangeView center={coordenadas} zoom={15} />
+            {/* Marcador no mapa */}
+            <Marker position={posicaoInicial}>
+                <Popup>
+                Aqui seria uma loja Exemplo!
+                </Popup>
+            </Marker>
+            </MapContainer>
         </div>
-        <MapContainer 
-          center={coordenadas} 
-          zoom={13} 
-          scrollWheelZoom={true}
-          >
-          {/* Camada de dados do OpenStreetMap */}
-          
-          <TileLayer
-            attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-          <ChangeView center={coordenadas} zoom={15} />
-          {/* Marcador no mapa */}
-          <Marker position={posicaoInicial}>
-            <Popup>
-              Aqui seria uma loja Exemplo!
-            </Popup>
-          </Marker>
-        </MapContainer>
     </>
     )
 }

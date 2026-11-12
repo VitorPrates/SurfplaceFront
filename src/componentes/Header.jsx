@@ -11,10 +11,10 @@ export default function Header()
 
     return(<>
     <header className="bg-azulforte h-25 flex items-center relative overflow-hidden">
-        <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute left-[-50px]"></span>
-        <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute left-[-100px]"></span>
-        <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute right-[-50px]"></span>
-        <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute right-[-100px]"></span>
+       <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute -left-12.5"></span>
+        <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute -left-25"></span>
+        <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute -right-12.5"></span>
+        <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute -right-25"></span>
         
         
         <div className="flex items-center w-fit m-auto gap-[58px]">

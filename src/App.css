@@ -21,3 +21,23 @@ html
   width: 100%;
   height: calc(100dvh - 170px); /* Defina a altura desejada */
 }
+.bemvindo 
+{
+  content: "teste";
+  -webkit-mask-image: radial-gradient(circle 300px, transparent 99%, black 100%);
+  mask-image: radial-gradient(circle 300px at calc(55% + 300px), transparent 99%, black 100%);
+  mask-border: black;
+  pointer-events: none;
+}
+.bemvindo::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(55% + 300px);
+  transform: translate(-50%, -50%);
+  width: 600px;  
+  height: 600px;
+  border-radius: 50%;
+  border: 3px solid; 
+  pointer-events: none; /* Garante que a borda também não bloqueie cliques */
+}

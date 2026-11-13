@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-
+import Vizualizador_produtos from './Vizualizador_produtos'
 
 function ChangeView({ center, zoom }) {
         const map = useMap();
@@ -17,9 +17,11 @@ export default function Navegador()
     const [coordenadas, setCoordenadas] = useState([-23.561684, -46.655981]);
     const [errocoordenada, seterrocoordenada] = useState(false)
     const posicaoInicial = [-23.561684, -46.655981];
+    const [vendoprodutos, setvendoprodutos] = useState(false)
 
-
-
+    const alterarventdo = () =>{
+        setvendoprodutos(vendoprodutos => !vendoprodutos)
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault(); 
@@ -68,6 +70,7 @@ export default function Navegador()
                     {errocoordenada? <p>Não encontrado</p> : ""}
                 </form>
             </div>
+            <Vizualizador_produtos vendo={vendoprodutos}/>
             <MapContainer 
             center={coordenadas} 
             zoom={13} 
@@ -81,7 +84,11 @@ export default function Navegador()
                 />
             <ChangeView center={coordenadas} zoom={15} />
             {/* Marcador no mapa */}
-            <Marker position={posicaoInicial}>
+            <Marker position={posicaoInicial} eventHandlers={{
+                click: () => {
+                alterarventdo()
+                },
+            }}>
                 <Popup>
                 Aqui seria uma loja Exemplo!
                 </Popup>

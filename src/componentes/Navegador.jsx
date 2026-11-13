@@ -1,15 +1,61 @@
-import { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents  } from 'react-leaflet';
 import Vizualizador_produtos from './Vizualizador_produtos'
+import 'leaflet/dist/leaflet.css';
 
 function ChangeView({ center, zoom }) {
-        const map = useMap();
-        map.flyTo(center, zoom, {
-            duration: 2 // Duração da animação em segundos
-        });
-        return null;
-    }
+  const map = useMap();
 
+  useEffect(() => {
+    if (center) {
+      map.flyTo(center, zoom, {
+        duration: 2,
+      });
+    }
+  }, [center, zoom, map]);
+
+  return null;
+}
+
+const TODOS_OS_PONTOS = [
+  { id: 1, nome: 'Ponto A', lat: -23.5505, lng: -46.6333 },
+  { id: 2, nome: 'Ponto B', lat: -23.5614, lng: -46.6558 },
+  { id: 3, nome: 'Ponto C (Longe)', lat: -22.9068, lng: -43.1729 },
+];
+
+function MarcadoresVisiveis({ pontos }) {
+  const [bounds, setBounds] = useState(null);
+
+  const map = useMapEvents({
+    moveend: () => {
+      setBounds(map.getBounds());
+    },
+    zoomend: () => {
+      setBounds(map.getBounds());
+    },
+  });
+
+  // Define os limites iniciais assim que o mapa carregar
+  useEffect(() => {
+    setBounds(map.getBounds());
+  }, [map]);
+
+  // Filtra apenas os pontos que estão dentro da área visível
+  const pontosNaTela = pontos.filter((ponto) => {
+    if (!bounds) return false;
+    return bounds.contains([ponto.lat, ponto.lng]);
+  });
+
+  return (
+    <>
+      {pontosNaTela.map((ponto) => (
+        <Marker key={ponto.id} position={[ponto.lat, ponto.lng]}>
+          <Popup>{ponto.nome}</Popup>
+        </Marker>
+      ))}
+    </>
+  );
+}
 
 export default function Navegador()
 {
@@ -45,7 +91,7 @@ export default function Navegador()
                 const lat = parseFloat(dados[0].lat);
                 const lon = parseFloat(dados[0].lon);
                 console.log(`Encontrado: ${lat}, ${lon}`);
-                setCoordenadas({ lat, lon }); 
+                setCoordenadas({ lat, lng: lon }); 
             } else {
                 console.log("Endereço não encontrado.");
                 seterrocoordenada(true)
@@ -93,6 +139,7 @@ export default function Navegador()
                 Aqui seria uma loja Exemplo!
                 </Popup>
             </Marker>
+            <MarcadoresVisiveis pontos={TODOS_OS_PONTOS} />
             </MapContainer>
         </div>
     </>

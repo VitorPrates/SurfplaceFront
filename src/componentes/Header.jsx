@@ -17,7 +17,7 @@ export default function Header()
         <span className="w-45 h-6.25 bg-azulleve -rotate-45 absolute -right-25"></span>
         
         
-        <div className="flex items-center w-fit m-auto gap-[58px]">
+        <div className="flex items-center w-fit m-auto gap-14.5">
             <div className="h-full w-fit">
                 <Link to={"/home"}><div className="logo w-20"><img src={logo} alt="logo surflace" className=""/></div></Link>
                 

@@ -42,8 +42,17 @@ export default function App() {
                 <Footer/>
               </>} /> 
 
-              <Route path="/login" element={<Login/>} /> 
-              <Route path="/Cadastro_user" element={<Cadastro_user/>} /> 
+              <Route path="/login" element={<>
+                <Header/>
+                <Login/>
+                <Footer />
+                
+              </>} /> 
+              <Route path="/Cadastro_user" element={<>
+              <Header />
+              <Cadastro_user/>
+              <Footer />
+              </>} /> 
             </Routes>
         </BrowserRouter>
       </AuthProvider>

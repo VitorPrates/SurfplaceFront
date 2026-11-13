@@ -19,7 +19,7 @@ export default function Header()
         
         <div className="flex items-center w-fit m-auto gap-[58px]">
             <div className="h-full w-fit">
-                <Link to={"/"}><div className="logo w-20"><img src={logo} alt="logo surflace" className=""/></div></Link>
+                <Link to={"/home"}><div className="logo w-20"><img src={logo} alt="logo surflace" className=""/></div></Link>
                 
             </div>
             <form action="" className="flex gap-5 items-center">

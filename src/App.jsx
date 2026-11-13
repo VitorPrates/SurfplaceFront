@@ -36,7 +36,6 @@ export default function App() {
               <Route path="/home" element={<>
                 <Header/>
                 <main className='h-[calc(100dvh-170px)] w-full'>
-                  
                   <Navegador/>
                 </main>
                 <Footer/>

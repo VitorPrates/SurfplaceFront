@@ -36,9 +36,9 @@ function MarcadoresVisiveis({ pontos }) {
   });
 
   // Define os limites iniciais assim que o mapa carregar
-  useEffect(() => {
-    setBounds(map.getBounds());
-  }, [map]);
+  // useEffect(() => {
+  //   setBounds(map.getBounds());
+  // }, [map]);
 
   // Filtra apenas os pontos que estão dentro da área visível
   const pontosNaTela = pontos.filter((ponto) => {

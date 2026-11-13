@@ -1,6 +1,4 @@
 import Card_produto_navegando from "./Card_produto_navegando"
-import { useState, useEffect } from "react"
-
 
 export default function Vizualizador_produtos({vendo})
 {

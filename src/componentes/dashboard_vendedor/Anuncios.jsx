@@ -17,23 +17,23 @@ export default function Anuncios() {
                         <div className="flex gap-3">
                             <span className="flex flex-col">
                                 <label htmlFor="NomeProduto" >Nome do Produto</label>
-                                <input type="text" className="w-170 h-10 border rounded-full "/>
+                                <input type="text" className="w-170 h-10 border rounded-full pl-3 pr-3" name="produto"/>
                             </span>
                             <span className="flex flex-col">
-                                <label htmlFor="NomeProduto">Preço (R$)</label>
-                                <input type="text" className="w-56.25 h-10 border rounded-full "/>
+                                <label htmlFor="precoProduto">Preço (R$)</label>
+                                <input type="text" className="w-56.25 h-10 border rounded-full pl-3 pr-3 " name="preco"/>
                             </span>
                         </div>
                         <div className="flex">
                             <div className="w-fit flex flex-col">
                                 <label htmlFor="fotoproduto">Fotos do produto</label>
-                                <input type="file" className="w-112.5 h-112.5 border rounded-2xl"/>
+                                <input type="file" className="w-112.5 h-112.5 border rounded-2xl" name="fotos"/>
                             </div>
                             <div className="flex flex-col w-full b h-fit">
                                 <label htmlFor="fotoproduto" className="text-left w-112.5 mr-0 ml-auto">Descrição do Produto</label>
-                                <textarea name="" id="" className="w-112.5 h-82.5 border rounded-2xl mr-0 ml-auto p-2"></textarea>
+                                <textarea name="descricao" id="" className="w-112.5 h-82.5 border rounded-2xl mr-0 ml-auto p-2"></textarea>
                                 <label htmlFor="Tags" className="text-left w-112.5 mr-0 ml-auto">Tags do produto</label>
-                                <input type="text" className="w-112.5 h-11.25 rounded border ml-auto"/>
+                                <input type="text" className="w-112.5 h-11.25 rounded border ml-auto pl-3 pr-3" name="tags"/>
                                 <div className="w-full h-full flex items-center justify-evenly p-3">
                                     <button type="reset" className="bg-azulleve text-white font-bold text-[22px] w-50 h-7.5 rounded border border-black flex justify-center items-center">Reiniciar</button>
                                     <button type="submit" className="bg-azulforte text-white font-bold text-[22px] w-50 h-7.5 rounded border border-black flex justify-center items-center">Adicionar</button>

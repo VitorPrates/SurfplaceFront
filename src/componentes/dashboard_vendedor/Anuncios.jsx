@@ -21,7 +21,7 @@ export default function Anuncios() {
                             </span>
                             <span className="flex flex-col">
                                 <label htmlFor="precoProduto">Preço (R$)</label>
-                                <input type="text" className="w-56.25 h-10 border rounded-full pl-3 pr-3 " name="preco"/>
+                                <input type="number" className="w-56.25 h-10 border rounded-full pl-3 pr-3 " name="preco"/>
                             </span>
                         </div>
                         <div className="flex">

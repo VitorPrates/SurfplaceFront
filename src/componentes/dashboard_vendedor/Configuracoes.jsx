@@ -1,5 +1,5 @@
 import Navegando_dashboard from "./Navegando_dashboard"
-export default function Anuncios() {
+export default function Configuracoes() {
     return (
         <main className="h-[calc(100dvh-170px)] bg-azulultraleve flex" >
             <Navegando_dashboard/>

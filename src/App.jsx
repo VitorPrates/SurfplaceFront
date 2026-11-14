@@ -13,6 +13,9 @@ import Cadastro_user from './componentes/Cadastro_user';
 import { AuthProvider } from './componentes/VerificadorLogin';
 import Header_simples from './componentes/Header_simples';
 import Anuncios from './componentes/dashboard_vendedor/Anuncios';
+import Pedidos from './componentes/dashboard_vendedor/Pedidos';
+import Faturamento from './componentes/dashboard_vendedor/Faturamento';
+import Configuracoes from './componentes/dashboard_vendedor/Configuracoes';
 
 export default function App() {
   // Coordenadas iniciais do centro do mapa (Exemplo: Avenida Paulista, São Paulo)
@@ -54,9 +57,24 @@ export default function App() {
             </>} />
 
             {/* DASHBOARD VENDEDOR */}
+            <Route path="/vendedor/pedidos" element={<>
+              <Header />
+              <Pedidos />
+              <Footer />
+            </>} />
             <Route path="/vendedor/anuncios" element={<>
               <Header />
               <Anuncios />
+              <Footer />
+            </>} />
+            <Route path="/vendedor/faturamento" element={<>
+              <Header />
+              <Faturamento />
+              <Footer />
+            </>} />
+            <Route path="/vendedor/configs" element={<>
+              <Header />
+              <Configuracoes />
               <Footer />
             </>} />
 

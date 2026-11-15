@@ -3,7 +3,7 @@ import * as Icons from "react-bootstrap-icons";
 
 const API_ORIGIN = "http://localhost:4000";
 
-export default function Produto_anuncio({ produto }) {
+export default function Produto_anuncio({ produto, onExcluir, excluindo, onEditar }) {
 
   // Converter centavos em reais
   const precoFormatado = (produto.precoCentavos / 100)
@@ -57,18 +57,45 @@ export default function Produto_anuncio({ produto }) {
       </span>
 
       {/* EXCLUIR - próxima etapa */}
-      <span className="justify-center">
-        <Icons.X
-          className="text-[70px] "
-        />
-      </span>
+        <span className="justify-center">
+        <button
+            type="button"
+            onClick={() => onExcluir(produto._id)}
+            disabled={excluindo}
+            aria-label={`Excluir ${produto.nome}`}
+            className="flex items-center justify-center
+            w-full h-full cursor-pointer
+            hover:bg-red-50 transition-colors
+            disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            {excluindo ? (
+            <Icons.ArrowClockwise
+                className="text-[35px] animate-spin text-gray-500"
+            />
+            ) : (
+            <Icons.X
+                className="text-[70px] text-red-600"
+            />
+            )}
+        </button>
+        </span>
+
 
       {/* EDITAR - próxima etapa */}
       <span className="justify-center">
-        <Icons.Pencil
-          className="text-[37px] "
-        />
-      </span>
+        <button
+            type="button"
+            onClick={() => onEditar(produto)}
+            aria-label={`Editar ${produto.nome}`}
+            className="flex items-center justify-center
+            w-full h-full cursor-pointer
+            hover:bg-blue-50 transition-colors"
+        >
+            <Icons.Pencil
+            className="text-[37px] text-azulforte"
+            />
+        </button>
+        </span>
 
     </div>
   );

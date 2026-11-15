@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Navegando_dashboard from "./Navegando_dashboard";
+import FotosProduto from "./FotosProduto";
 
 import Produto_anuncio from "./Produto_anuncio"
 
@@ -18,10 +19,13 @@ export default function Anuncios() {
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState(false);
+  
 
   const [produtos, setProdutos] = useState([]);
   const [carregandoProdutos, setCarregandoProdutos] = useState(true);
   const [erroProdutos, setErroProdutos] = useState("");
+  const [excluindoId, setExcluindoId] = useState(null);
+  const [produtoEditando, setProdutoEditando] = useState(null);
 
   const inputFotosRef = useRef(null);
 
@@ -47,7 +51,7 @@ useEffect(() => {
         if (!Array.isArray(resultado.produtos)) {
           throw new Error("Resposta inválida do servidor.");
         }
-
+        console.log(resultado.produtos)
         setProdutos(resultado.produtos);
 
       } catch (erro) {
@@ -69,6 +73,37 @@ useEffect(() => {
   }, []);
 
 
+
+  function editarProduto(produto) {
+    setProdutoEditando(produto);
+
+    setNome(produto.nome);
+    setPreco(
+      (produto.precoCentavos / 100).toFixed(2).replace(".", ",")
+    );
+    setDescricao(produto.descricao);
+    setTags((produto.tags || []).join(","));
+    setQuantidade(String(produto.quantidade ?? 0));
+
+    // As imagens existentes são representadas
+    // pelos caminhos salvos no MongoDB.
+    setFotos(
+      (produto.fotos || []).map((caminho) => ({
+        caminho
+      }))
+    );
+
+    setMensagem("");
+    setErro(false);
+
+    setbtn("Editando");
+  }
+
+  function cancelarEdicao() {
+    setProdutoEditando(null);
+    reiniciarFormulario();
+    setbtn("Anuncios");
+  }
   // Formata o preço como 00,00
   function formatarPreco(valor) {
     const numeros = valor.replace(/\D/g, "").slice(0, 15);
@@ -175,15 +210,38 @@ useEffect(() => {
     formData.append("tags", tags);
     formData.append("quantidade", quantidade);
 
-    fotos.forEach((foto) => {
+    const fotosMantidas = fotos
+      .filter((foto) => !(foto instanceof File))
+      .map((foto) => foto.caminho);
+
+    const fotosNovas = fotos.filter(
+      (foto) => foto instanceof File
+    );
+
+    // Durante a edição, informa ao backend
+    // quais fotos antigas continuarão no produto.
+    if (produtoEditando) {
+      formData.append(
+        "fotosMantidas",
+        JSON.stringify(fotosMantidas)
+      );
+    }
+
+    // Somente fotos novas precisam de upload.
+    fotosNovas.forEach((foto) => {
       formData.append("fotos", foto);
     });
+
 
     try {
       setCarregando(true);
 
-      const resposta = await fetch(API_URL, {
-        method: "POST",
+      const url = produtoEditando
+        ? `${API_URL}/${produtoEditando._id}`
+        : API_URL;
+
+      const resposta = await fetch(url, {
+        method: produtoEditando ? "PUT" : "POST",
         body: formData
       });
 
@@ -194,19 +252,42 @@ useEffect(() => {
           resultado.mensagem || "Erro ao cadastrar produto."
         );
       }
+      
+      if (produtoEditando) {
 
-      setProdutos((produtosAtuais) => [
-        resultado.produto,
-        ...produtosAtuais.filter(
-          (produto) => produto._id !== resultado.produto._id
-        )
-      ]);
+        // Atualiza somente o produto editado
+        setProdutos((produtosAtuais) =>
+          produtosAtuais.map((produto) =>
+            produto._id === resultado.produto._id
+              ? resultado.produto
+              : produto
+          )
+        );
 
-      setMensagem("Produto cadastrado com sucesso!");
+        setProdutoEditando(null);
+        reiniciarFormulario();
+        setbtn("Anuncios");
+
+      } else {
+
+        // Adiciona o novo produto à listagem
+        setProdutos((produtosAtuais) => [
+          resultado.produto,
+          ...produtosAtuais.filter(
+            (produto) => produto._id !== resultado.produto._id
+          )
+        ]);
+
+        reiniciarFormulario();
+      }
+
+      setMensagem(
+        produtoEditando
+          ? "Produto atualizado com sucesso!"
+          : "Produto cadastrado com sucesso!"
+      );
       setErro(false);
 
-      reiniciarFormulario();
-      setMensagem("Produto cadastrado com sucesso!");
 
     } catch (error) {
       setMensagem(error.message);
@@ -215,6 +296,56 @@ useEffect(() => {
       setCarregando(false);
     }
   }
+
+
+  async function excluirProduto(id) {
+    // Impede exclusões simultâneas
+    if (excluindoId !== null) return;
+
+    const confirmado = window.confirm(
+      "Tem certeza que deseja excluir este produto?"
+    );
+
+    if (!confirmado) return;
+
+    try {
+      setExcluindoId(id);
+      setMensagem("");
+      setErro(false);
+
+      const resposta = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+      });
+
+      const resultado = await resposta.json();
+
+      if (!resposta.ok) {
+        throw new Error(
+          resultado.mensagem || "Erro ao excluir produto."
+        );
+      }
+
+      // Atualiza a lista sem recarregar a página
+      setProdutos((produtosAtuais) =>
+        produtosAtuais.filter(
+          (produto) => produto._id !== id
+        )
+      );
+
+      setMensagem("Produto excluído com sucesso!");
+      setErro(false);
+
+    } catch (error) {
+      setMensagem(error.message);
+      setErro(true);
+
+      console.error("Erro ao excluir produto:", error);
+
+    } finally {
+      setExcluindoId(null);
+    }
+  }
+
 
   return (
     <main className="h-[calc(100dvh-170px)] bg-azulultraleve flex">
@@ -230,7 +361,11 @@ useEffect(() => {
                 ? "bg-azulforte text-amarelodestaque"
                 : "bg-white text-black"
               } font-bold text-[24px] w-50 h-full border-r-2 border-black cursor-pointer`}
-              onClick={() => setbtn("Anuncios")}
+              onClick={() => {
+                setProdutoEditando(null);
+                reiniciarFormulario();
+                setbtn("Anuncios");
+              }}
             >
               Anuncios
             </button>
@@ -241,10 +376,29 @@ useEffect(() => {
                 ? "bg-azulforte text-amarelodestaque"
                 : "bg-white text-black"
               } font-bold text-[24px] w-50 h-full border-r-2 border-black cursor-pointer`}
-              onClick={() => setbtn("Anunciar")}
+              onClick={() => {
+                setProdutoEditando(null);
+                reiniciarFormulario();
+                setbtn("Anunciar");
+              }}
             >
               Anunciar
             </button>
+            {produtoEditando && (
+              <button
+                type="button"
+                onClick={() => setbtn("Editando")}
+                className={`${
+                  btn_anuncio === "Editando"
+                    ? "bg-azulforte text-amarelodestaque"
+                    : "bg-white text-black"
+                } font-bold text-[24px] w-50 h-full
+                  border-r-2 border-black cursor-pointer`}
+              >
+                Editando
+              </button>
+            )}
+
           </nav>
 
           {btn_anuncio === "Anuncios" ? (
@@ -260,6 +414,16 @@ useEffect(() => {
                 <span className="w-32.5 m-auto">Preço(R$)</span>
                 <span className="w-35 m-auto">Ações</span>
               </div>
+              {mensagem && (
+                <p
+                  role="status"
+                  className={`text-center p-2 font-semibold ${
+                    erro ? "text-red-600" : "text-green-600"
+                  }`}
+                >
+                  {mensagem}
+                </p>
+              )}
               <div className="mt-3 h-[calc(100%-65px)] overflow-y-auto">
                 {carregandoProdutos ? (
                   <p className="text-center mt-5">
@@ -278,6 +442,9 @@ useEffect(() => {
                     <Produto_anuncio
                       key={produto._id}
                       produto={produto}
+                      onExcluir={excluirProduto}
+                      excluindo={excluindoId === produto._id}
+                      onEditar={editarProduto}
                     />
                   ))
                 )}
@@ -333,24 +500,12 @@ useEffect(() => {
 
               <div className="flex">
                 <div className="w-fit flex flex-col">
-                  <label htmlFor="fotoproduto">
-                    Fotos do produto
-                  </label>
-
-                  <input
-                    id="fotoproduto"
-                    ref={inputFotosRef}
-                    type="file"
-                    name="fotos"
-                    multiple
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={selecionarFotos}
-                    className="w-112.5 h-112.5 border rounded-2xl"
+                  <FotosProduto
+                    fotos={fotos}
+                    setFotos={setFotos}
+                    setMensagem={setMensagem}
+                    setErro={setErro}
                   />
-
-                  <small className="text-gray-500">
-                    {fotos.length}/5 imagens selecionadas
-                  </small>
                 </div>
 
                 <div className="flex flex-col w-full h-fit">
@@ -414,19 +569,32 @@ useEffect(() => {
                   <div className="w-full h-full flex items-center justify-evenly p-3">
                     <button
                       type="button"
-                      onClick={reiniciarFormulario}
+                      onClick={
+                        produtoEditando
+                          ? cancelarEdicao
+                          : reiniciarFormulario
+                      }
                       disabled={carregando}
-                      className="bg-azulleve text-white font-bold text-[22px] w-50 h-7.5 rounded border border-black flex justify-center items-center cursor-pointer disabled:opacity-50"
+                      className="bg-azulleve text-white font-bold
+                        text-[22px] w-50 h-7.5 rounded border
+                        border-black flex justify-center items-center
+                        cursor-pointer disabled:opacity-50"
                     >
-                      Reiniciar
+                      {produtoEditando ? "Cancelar" : "Reiniciar"}
                     </button>
-
                     <button
                       type="submit"
                       disabled={carregando}
-                      className="bg-azulforte text-white font-bold text-[22px] w-50 h-7.5 rounded border border-black flex justify-center items-center cursor-pointer disabled:opacity-50"
+                      className="bg-azulforte text-white font-bold
+                        text-[22px] w-50 h-7.5 rounded border
+                        border-black flex justify-center items-center
+                        cursor-pointer disabled:opacity-50"
                     >
-                      {carregando ? "Salvando..." : "Adicionar"}
+                      {carregando
+                        ? "Salvando..."
+                        : produtoEditando
+                          ? "Salvar edição"
+                          : "Adicionar"}
                     </button>
                   </div>
                     

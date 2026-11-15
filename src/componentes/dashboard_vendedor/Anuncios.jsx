@@ -2,6 +2,8 @@
 import { useRef, useState } from "react";
 import Navegando_dashboard from "./Navegando_dashboard";
 
+import Produto_anuncio from "./Produto_anuncio"
+
 const API_URL = "http://localhost:4000/surfplace2";
 
 export default function Anuncios() {
@@ -11,6 +13,7 @@ export default function Anuncios() {
   const [preco, setPreco] = useState("");
   const [descricao, setDescricao] = useState("");
   const [tags, setTags] = useState("");
+  const [quantidade, setQuantidade] = useState("");
   const [fotos, setFotos] = useState([]);
 
   const [carregando, setCarregando] = useState(false);
@@ -74,6 +77,7 @@ export default function Anuncios() {
     setPreco("");
     setDescricao("");
     setTags("");
+    setQuantidade("")
     setFotos([]);
     setMensagem("");
     setErro(false);
@@ -115,6 +119,7 @@ export default function Anuncios() {
     formData.append("preco", preco);
     formData.append("descricao", descricao.trim());
     formData.append("tags", tags);
+    formData.append("quantidade", quantidade);
 
     fotos.forEach((foto) => {
       formData.append("fotos", foto);
@@ -182,11 +187,24 @@ export default function Anuncios() {
           </nav>
 
           {btn_anuncio === "Anuncios" ? (
-            <div></div>
+            <div className="w-[97%] h-[90%] m-auto">
+              <div className="
+                grid grid-cols-[125px_436px_80px_150px_160px] items-center
+                [&_span]:border-2 [&_span]:font-bold [&_span]:text-center [&_span]:rounded [&_span]:text-[24px] [&_span]:h-8.25 [&_span]:flex [&_span]:items-center [&_span]:justify-center
+                ">
+                  {/* 85px_370px_70px_130px_140px */}
+                <span className="w-21.25 m-auto">Capa</span>
+                <span className="w-92.5 m-auto">Nome</span>
+                <span className="w-17.5 m-auto">QTD</span>
+                <span className="w-32.5 m-auto">Preço(R$)</span>
+                <span className="w-35 m-auto">Ações</span>
+              </div>
+              <Produto_anuncio/>
+            </div>
           ) : (
             <form
               onSubmit={adicionarProduto}
-              className="[&_label]:text-[24px] [&_label]:font-bold border-1 m-auto w-237.5 h-155 rounded-2xl p-3.75"
+              className="[&_label]:text-[24px] [&_label]:font-bold border m-auto w-237.5 h-155 rounded-2xl p-3.75 relative"
             >
               <div className="flex gap-3">
                 <span className="flex flex-col">
@@ -270,12 +288,14 @@ export default function Anuncios() {
                     className="w-112.5 h-82.5 border rounded-2xl mr-0 ml-auto p-2"
                   />
 
-                  <label
-                    htmlFor="Tags"
-                    className="text-left w-112.5 mr-0 ml-auto"
-                  >
-                    Tags do produto
-                  </label>
+                  <div className="flex justify-center max-w-112.5 mr-0 ml-auto">
+                   <div>
+                     <label
+                        htmlFor="Tags"
+                        className="text-left w-112.5 mr-0 ml-auto"
+                      >
+                        Tags do produto
+                      </label>
 
                   <input
                     id="Tags"
@@ -284,8 +304,27 @@ export default function Anuncios() {
                     placeholder="tag1,tag2,tag3"
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
-                    className="w-112.5 h-11.25 rounded border ml-auto pl-3 pr-3"
+                    className="w-70.5 h-11.25 rounded border ml-auto pl-3 pr-3"
                   />
+                   </div>
+                   <div className="flex flex-col ">
+                          <label
+                          htmlFor="Quantidade"
+                          className="text-left w-37.5 mr-0 ml-2"
+                          >
+                        Quantidade
+                      </label>
+                      <input
+                        id="Quantidade"
+                        type="text"
+                        name="Quantidade"
+                        placeholder="0"
+                        value={quantidade}
+                        onChange={(e) => setQuantidade(e.target.value)}
+                        className="w-37.5 h-11.25 rounded border ml-2 mr-0 pl-3 pr-3"
+                      />
+                   </div>
+                  </div>
 
                   <div className="w-full h-full flex items-center justify-evenly p-3">
                     <button
@@ -305,16 +344,14 @@ export default function Anuncios() {
                       {carregando ? "Salvando..." : "Adicionar"}
                     </button>
                   </div>
-
+                    
                   {mensagem && (
-                    <p
-                      role="status"
-                      className={`text-center text-sm font-medium ${
+                    <div role="status" className={`absolute left-[calc(50%-230px)] w-115 h-25 flex items-center justify-center rounded-2xl border bg-white drop-shadow-2xl ${
                         erro ? "text-red-600" : "text-green-600"
-                      }`}
-                    >
+                      }`}>
                       {mensagem}
-                    </p>
+                    </div>
+                    
                   )}
                 </div>
               </div>

@@ -1,10 +1,9 @@
-
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navegando_dashboard from "./Navegando_dashboard";
 
 import Produto_anuncio from "./Produto_anuncio"
 
-const API_URL = "http://localhost:4000/surfplace2";
+const API_URL = "http://localhost:4000/api/produtos";
 
 export default function Anuncios() {
   const [btn_anuncio, setbtn] = useState("Anuncios");
@@ -20,7 +19,55 @@ export default function Anuncios() {
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState(false);
 
+  const [produtos, setProdutos] = useState([]);
+  const [carregandoProdutos, setCarregandoProdutos] = useState(true);
+  const [erroProdutos, setErroProdutos] = useState("");
+
   const inputFotosRef = useRef(null);
+
+
+useEffect(() => {
+  const controller = new AbortController();
+
+  async function buscarProdutos() {
+    try {
+        setCarregandoProdutos(true);
+        setErroProdutos("");
+
+        const resposta = await fetch(API_URL, {
+          signal: controller.signal
+        });
+
+        if (!resposta.ok) {
+          throw new Error("Erro ao buscar produtos.");
+        }
+
+        const resultado = await resposta.json();
+
+        if (!Array.isArray(resultado.produtos)) {
+          throw new Error("Resposta inválida do servidor.");
+        }
+
+        setProdutos(resultado.produtos);
+
+      } catch (erro) {
+        if (erro.name === "AbortError") return;
+
+        console.error(erro);
+        setErroProdutos(erro.message);
+
+      } finally {
+        if (!controller.signal.aborted) {
+          setCarregandoProdutos(false);
+        }
+      }
+    }
+
+    buscarProdutos();
+
+    return () => controller.abort();
+  }, []);
+
 
   // Formata o preço como 00,00
   function formatarPreco(valor) {
@@ -112,7 +159,14 @@ export default function Anuncios() {
       setErro(true);
       return;
     }
-
+    if (
+      !/^\d+$/.test(quantidade.trim()) ||
+      !Number.isSafeInteger(Number(quantidade))
+    ) {
+      setMensagem("Informe uma quantidade inteira maior ou igual a zero.");
+      setErro(true);
+      return;
+    }
     const formData = new FormData();
 
     formData.append("nome", nome.trim());
@@ -140,6 +194,13 @@ export default function Anuncios() {
           resultado.mensagem || "Erro ao cadastrar produto."
         );
       }
+
+      setProdutos((produtosAtuais) => [
+        resultado.produto,
+        ...produtosAtuais.filter(
+          (produto) => produto._id !== resultado.produto._id
+        )
+      ]);
 
       setMensagem("Produto cadastrado com sucesso!");
       setErro(false);
@@ -199,7 +260,28 @@ export default function Anuncios() {
                 <span className="w-32.5 m-auto">Preço(R$)</span>
                 <span className="w-35 m-auto">Ações</span>
               </div>
-              <Produto_anuncio/>
+              <div className="mt-3 h-[calc(100%-65px)] overflow-y-auto">
+                {carregandoProdutos ? (
+                  <p className="text-center mt-5">
+                    Carregando produtos...
+                  </p>
+                ) : erroProdutos ? (
+                  <p className="text-center mt-5 text-red-600">
+                    {erroProdutos}
+                  </p>
+                ) : produtos.length === 0 ? (
+                  <p className="text-center mt-5">
+                    Nenhum produto cadastrado.
+                  </p>
+                ) : (
+                  produtos.map((produto) => (
+                    <Produto_anuncio
+                      key={produto._id}
+                      produto={produto}
+                    />
+                  ))
+                )}
+              </div>
             </div>
           ) : (
             <form
@@ -314,15 +396,18 @@ export default function Anuncios() {
                           >
                         Quantidade
                       </label>
-                      <input
-                        id="Quantidade"
-                        type="text"
-                        name="Quantidade"
-                        placeholder="0"
-                        value={quantidade}
-                        onChange={(e) => setQuantidade(e.target.value)}
-                        className="w-37.5 h-11.25 rounded border ml-2 mr-0 pl-3 pr-3"
-                      />
+                    <input
+                      id="Quantidade"
+                      type="number"
+                      name="quantidade"
+                      placeholder="0"
+                      min="0"
+                      step="1"
+                      required
+                      value={quantidade}
+                      onChange={(e) => setQuantidade(e.target.value)}
+                      className="w-37.5 h-11.25 rounded border ml-2 mr-0 pl-3 pr-3"
+                    />
                    </div>
                   </div>
 

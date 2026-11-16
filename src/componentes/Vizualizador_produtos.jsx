@@ -88,6 +88,7 @@ export default function Vizualizador_produtos({
                 <Card_produto_navegando
                   key={produto._id}
                   produto={produto}
+                  lojaId={loja._id}
                 />
               ))}
             </div>

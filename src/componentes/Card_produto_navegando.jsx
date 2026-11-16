@@ -1,4 +1,4 @@
-
+import { useNavigate } from "react-router-dom";
 const API_ORIGIN = "http://localhost:4000";
 
 function formatarPreco(centavos) {
@@ -9,18 +9,26 @@ function formatarPreco(centavos) {
 }
 
 export default function Card_produto_navegando({
-  produto
+  produto,
+  lojaId
 }) {
-  const imagem = produto.fotos?.[0]
+    const imagem = produto.fotos?.[0]
     ? `${API_ORIGIN}${produto.fotos[0]}`
     : null;
+    const navigate = useNavigate();
 
+    function abrirProduto() {
+        navigate(`/loja/${lojaId}/produto/${produto._id}`);
+    }
   return (
     <article
       className="bg-azulultraleve w-full
         min-h-17 rounded-md p-2
         flex items-center gap-2"
+        onClick={abrirProduto}
+        
     >
+        
       {/* FOTO */}
       <div
         className="bg-white rounded-md

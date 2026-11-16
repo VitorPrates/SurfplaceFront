@@ -5,7 +5,7 @@ import { useAuth } from './VerificadorLogin.jsx';
 
 export default function Header()
 {
-    const { user, loading } = useAuth();
+    const { user, loading, logout } = useAuth();
 
     if (loading) return <p>Carregando...</p>;
     const navigate = useNavigate();
@@ -40,9 +40,13 @@ export default function Header()
             <nav className="flex items-center gap-4">
             {user ? (
                 <>
-                <span className="font-bold text-amarelodestaque text-[24px]">
+                <Link
+                    to="/minha-conta"
+                    className="font-bold text-amarelodestaque
+                        text-[24px] hover:underline"
+                    >
                     Olá, {user.nome}!
-                </span>
+                </Link>
 
                 <button
                     type="button"

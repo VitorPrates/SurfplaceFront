@@ -17,6 +17,8 @@ import Pedidos from './componentes/dashboard_vendedor/Pedidos';
 import Faturamento from './componentes/dashboard_vendedor/Faturamento';
 import Configuracoes from './componentes/dashboard_vendedor/Configuracoes';
 import RotaProtegida from "./componentes/RotaProtegida";
+import MinhaConta from "./componentes/MinhaConta";
+import CriarLoja from "./componentes/CriarLoja";
 
 export default function App() {
   // Coordenadas iniciais do centro do mapa (Exemplo: Avenida Paulista, São Paulo)
@@ -105,6 +107,33 @@ export default function App() {
               />
 
             </Route>
+
+            <Route element={<RotaProtegida />}>
+
+              <Route
+                path="/minha-conta"
+                element={
+                  <>
+                    <Header />
+                    <MinhaConta />
+                    <Footer />
+                  </>
+                }
+              />
+
+              <Route
+                path="/criar-loja"
+                element={
+                  <>
+                    <Header />
+                    <CriarLoja />
+                    <Footer />
+                  </>
+                }
+              />
+
+            </Route>
+
 
 
           </Routes>

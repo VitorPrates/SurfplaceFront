@@ -39,7 +39,8 @@ useEffect(() => {
         setErroProdutos("");
 
         const resposta = await fetch(API_URL, {
-          signal: controller.signal
+          signal: controller.signal,
+          credentials: "include"
         });
 
         if (!resposta.ok) {
@@ -242,7 +243,8 @@ useEffect(() => {
 
       const resposta = await fetch(url, {
         method: produtoEditando ? "PUT" : "POST",
-        body: formData
+        body: formData,
+        credentials: "include"
       });
 
       const resultado = await resposta.json();
@@ -314,7 +316,8 @@ useEffect(() => {
       setErro(false);
 
       const resposta = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
       });
 
       const resultado = await resposta.json();

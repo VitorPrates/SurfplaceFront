@@ -42,8 +42,8 @@ export default function App() {
             <Route path="/home" element={<>
               <Header />
               <main className='h-[calc(100dvh-170px)] w-full'>
-                {/* <Navegador /> */}
-                <MapaLojas />
+                <Navegador />
+                {/* <MapaLojas /> */}
               </main>
               <Footer />
             </>} />

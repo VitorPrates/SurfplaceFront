@@ -19,6 +19,7 @@ import Configuracoes from './componentes/dashboard_vendedor/Configuracoes';
 import RotaProtegida from "./componentes/RotaProtegida";
 import MinhaConta from "./componentes/MinhaConta";
 import CriarLoja from "./componentes/CriarLoja";
+import MapaLojas from "./componentes/MapaLojas";
 
 export default function App() {
   // Coordenadas iniciais do centro do mapa (Exemplo: Avenida Paulista, São Paulo)
@@ -41,7 +42,8 @@ export default function App() {
             <Route path="/home" element={<>
               <Header />
               <main className='h-[calc(100dvh-170px)] w-full'>
-                <Navegador />
+                {/* <Navegador /> */}
+                <MapaLojas />
               </main>
               <Footer />
             </>} />

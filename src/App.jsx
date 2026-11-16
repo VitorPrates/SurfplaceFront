@@ -16,6 +16,7 @@ import Anuncios from './componentes/dashboard_vendedor/Anuncios';
 import Pedidos from './componentes/dashboard_vendedor/Pedidos';
 import Faturamento from './componentes/dashboard_vendedor/Faturamento';
 import Configuracoes from './componentes/dashboard_vendedor/Configuracoes';
+import RotaProtegida from "./componentes/RotaProtegida";
 
 export default function App() {
   // Coordenadas iniciais do centro do mapa (Exemplo: Avenida Paulista, São Paulo)
@@ -25,7 +26,6 @@ export default function App() {
     <>
       <AuthProvider>
         <BrowserRouter>
-
           {/* Configuração das rotas */}
           <Routes>
             <Route path="/" element={<>
@@ -56,27 +56,55 @@ export default function App() {
               <Footer />
             </>} />
 
-            {/* DASHBOARD VENDEDOR */}
-            <Route path="/vendedor/pedidos" element={<>
-              <Header />
-              <Pedidos />
-              <Footer />
-            </>} />
-            <Route path="/vendedor/anuncios" element={<>
-              <Header />
-              <Anuncios />
-              <Footer />
-            </>} />
-            <Route path="/vendedor/faturamento" element={<>
-              <Header />
-              <Faturamento />
-              <Footer />
-            </>} />
-            <Route path="/vendedor/configs" element={<>
-              <Header />
-              <Configuracoes />
-              <Footer />
-            </>} />
+            
+            {/* DASHBOARD VENDEDOR - ROTAS PRIVADAS */}
+            <Route element={<RotaProtegida />}>
+
+              <Route
+                path="/vendedor/pedidos"
+                element={
+                  <>
+                    <Header />
+                    <Pedidos />
+                    <Footer />
+                  </>
+                }
+              />
+
+              <Route
+                path="/vendedor/anuncios"
+                element={
+                  <>
+                    <Header />
+                    <Anuncios />
+                    <Footer />
+                  </>
+                }
+              />
+
+              <Route
+                path="/vendedor/faturamento"
+                element={
+                  <>
+                    <Header />
+                    <Faturamento />
+                    <Footer />
+                  </>
+                }
+              />
+
+              <Route
+                path="/vendedor/configs"
+                element={
+                  <>
+                    <Header />
+                    <Configuracoes />
+                    <Footer />
+                  </>
+                }
+              />
+
+            </Route>
 
 
           </Routes>

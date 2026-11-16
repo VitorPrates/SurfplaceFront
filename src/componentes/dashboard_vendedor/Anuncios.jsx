@@ -51,7 +51,7 @@ useEffect(() => {
         if (!Array.isArray(resultado.produtos)) {
           throw new Error("Resposta inválida do servidor.");
         }
-        console.log(resultado.produtos)
+        
         setProdutos(resultado.produtos);
 
       } catch (erro) {
@@ -252,7 +252,7 @@ useEffect(() => {
           resultado.mensagem || "Erro ao cadastrar produto."
         );
       }
-      
+
       if (produtoEditando) {
 
         // Atualiza somente o produto editado

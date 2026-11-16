@@ -1,6 +1,6 @@
 import logo from "../assets/logo-sem-fundo.png"
 import * as Icons from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from './VerificadorLogin.jsx';
 
 export default function Header()
@@ -8,6 +8,16 @@ export default function Header()
     const { user, loading } = useAuth();
 
     if (loading) return <p>Carregando...</p>;
+    const navigate = useNavigate();
+
+    async function sair() {
+    try {
+        await logout();
+        navigate("/login", { replace: true });
+    } catch (erro) {
+        console.error("Erro ao encerrar sessão:", erro);
+    }
+    }
 
     return(<>
     <header className="bg-azulforte h-25 flex items-center relative overflow-hidden">
@@ -26,10 +36,30 @@ export default function Header()
                 <Icons.Search className="text-white rotate-y-180" size={40}/>
                 <input type="text" className="bg-white rounded-2xl w-132.5 h-7.5 pl-3 pr-3"/>
             </form>
-            <nav>
-                {/* <a href="" className="font-bold text-amarelodestaque text-[30px]">Login</a> */}
-                {user ? `Olá ${user}!` : <Link to={"/Login"} className="font-bold text-amarelodestaque text-[30px]">Login</Link>}
-                
+           
+            <nav className="flex items-center gap-4">
+            {user ? (
+                <>
+                <span className="font-bold text-amarelodestaque text-[24px]">
+                    Olá, {user.nome}!
+                </span>
+
+                <button
+                    type="button"
+                    onClick={sair}
+                    className="text-white font-bold cursor-pointer hover:underline"
+                >
+                    Sair
+                </button>
+                </>
+            ) : (
+                <Link
+                to="/login"
+                className="font-bold text-amarelodestaque text-[30px]"
+                >
+                Login
+                </Link>
+            )}
             </nav>
         </div>'
         {/* <a href="" className="text-amarelodestaque font-bold text-[30px]">Login</a> */}

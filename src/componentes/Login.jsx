@@ -1,109 +1,107 @@
-import { useState } from 'react';
-import { Link } from "react-router-dom"
+
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./VerificadorLogin";
 
 export default function Login() {
-  const [emailOrPhone, setEmailOrPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (emailOrPhone && password) {
-      setSubmitted(true);
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState("");
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    if (carregando) return;
+
+    try {
+      setCarregando(true);
+      setErro("");
+
+      await login(email, senha);
+
+      navigate("/home", { replace: true });
+
+    } catch (error) {
+      setErro(error.message);
+
+    } finally {
+      setCarregando(false);
     }
-  };
+  }
 
   return (
     <div className="h-[calc(100dvh-170px)] w-full bg-azulultraleve flex items-center justify-center p-4 font-sans">
-      <div className=" bg-white rounded border-2 w-125 h-117.5 pl-5 pr-5 pt-6.25">
-        {submitted ? (
-          <div className="text-center py-6 space-y-4">
-            <div className="w-12 h-12 bg-sky-100 text-[#00aeeef] rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
-              ✓
-            </div>
-            <h2 className="text-xl font-medium text-slate-800">Login realizado!</h2>
-            <p className="text-sm text-slate-600">
-              Bem-vindo(a) de volta, <span className="font-semibold">{emailOrPhone}</span>.
-            </p>
-            <button
-              onClick={() => {
-                setSubmitted(false);
-                setEmailOrPhone('');
-                setPassword('');
-              }}
-              className="mt-4 text-xs text-azulleve underline transition-colors"
+      <div className="bg-white rounded border-2 w-125 min-h-117.5 px-5 pt-6.25 pb-5">
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col"
+        >
+          <div className="flex flex-col">
+            <label
+              htmlFor="email"
+              className="text-[32px] tracking-wide font-light"
             >
-              Voltar ao formulário
-            </button>
+              E-mail
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full h-10 px-4 rounded-full border outline-none"
+            />
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col ">
-            {/* Campo E-mail ou Telefone */}
-            <div className="flex flex-col">
-              <label 
-                htmlFor="emailOrPhone" 
-                className="text-[32px] tracking-wide m-0  font-light"
-              >
-                E-mail ou telefone
-              </label>
-              <input
-                id="emailOrPhone"
-                type="text"
-                value={emailOrPhone}
-                onChange={(e) => setEmailOrPhone(e.target.value)}
-                required
-                className="w-full h-10 px-4 rounded-full border outline-none"
-              />
-            </div>
 
-            {/* Campo Senha */}
-            <div className="flex flex-col ">
-              <label 
-                htmlFor="password" 
-                className="text-[32px] pl-1 font-light mt-2"
-              >
-                Senha
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full h-10 px-4 rounded-full border outline-none  transition-all text-sm"
-              />
-              {/* Link Esqueceu sua senha */}
-              <div className="pt-0.5 pl-1">
-                <a
-                  href="#forgot-password"
-                  onClick={(e) => e.preventDefault()}
-                  className="text-[16px] text-azulleve hover:underline"
-                >
-                  Esqueceu sua senha?
-                </a>
-              </div>
-            </div>
-
-            {/* Link Não possui cadastro */}
-            <div className="mt-20 mb-3 text-center">
-              <a
-                href="#register"
-                onClick={(e) => e.preventDefault()}
-                className="text-[32px]  font-normal text-azulleve hover:underline"
-              >
-                <Link to={"/Cadastro_user"}>Não possui cadastro?</Link>
-              </a>
-            </div>
-
-            {/* Botão Continuar */}
-            <button
-              type="submit"
-              className="w-full mb-0 bg-azulleve cursor-pointer text-white text-[32px] font-medium rounded-lg shadow-sm active:scale-[0.99] transition-transform"
+          <div className="flex flex-col">
+            <label
+              htmlFor="senha"
+              className="text-[32px] pl-1 font-light mt-2"
             >
-              Continuar
-            </button>
-          </form>
-        )}
+              Senha
+            </label>
+
+            <input
+              id="senha"
+              type="password"
+              autoComplete="current-password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+              className="w-full h-10 px-4 rounded-full border outline-none"
+            />
+          </div>
+
+          {erro && (
+            <p role="alert" className="text-red-600 mt-3 text-center">
+              {erro}
+            </p>
+          )}
+
+          <div className="mt-20 mb-3 text-center">
+            <Link
+              to="/Cadastro_user"
+              className="text-[32px] font-normal text-azulleve hover:underline"
+            >
+              Não possui cadastro?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={carregando}
+            className="w-full bg-azulleve cursor-pointer text-white text-[32px] font-medium rounded-lg shadow-sm disabled:opacity-50"
+          >
+            {carregando ? "Entrando..." : "Continuar"}
+          </button>
+        </form>
       </div>
     </div>
   );

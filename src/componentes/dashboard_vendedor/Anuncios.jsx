@@ -4,7 +4,7 @@ import FotosProduto from "./FotosProduto";
 
 import Produto_anuncio from "./Produto_anuncio"
 
-const API_URL = "http://localhost:4000/api/produtos";
+const API_URL = "/api/produtos";
 
 export default function Anuncios() {
   const [btn_anuncio, setbtn] = useState("Anuncios");

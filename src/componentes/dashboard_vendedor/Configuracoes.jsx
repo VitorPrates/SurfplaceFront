@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Navegando_dashboard from "./Navegando_dashboard";
 import MapaLocalizacao from "./MapaLocalizacao";
 
-const API_URL = "http://localhost:4000/api";
+const API_URL = "/api";
 
 const enderecoInicial = {
   cep: "",
@@ -283,6 +283,11 @@ export default function Configuracoes() {
       </div>
     );
   }
+  function Vinculação com mercado pago feitaconectarMercadoPago() {
+  window.location.assign(
+    "/api/mercadopago/conectar"
+  );
+}
 
   return (
     <main className="h-[calc(100dvh-170px)] bg-azulultraleve flex">
@@ -420,7 +425,27 @@ export default function Configuracoes() {
               Cancelar
             </button>
           </div>
+            
         </form>
+        <section className="bg-white border rounded-lg p-4 mt-5">
+                <h3 className="text-xl font-bold">
+                    Pagamentos da loja
+                </h3>
+
+                <p className="text-sm text-gray-600 my-3">
+                    Conecte sua conta Mercado Pago para receber
+                    os pagamentos das vendas realizadas no Surfplace.
+                </p>
+
+                <button
+                    type="button"
+                    onClick={conectarMercadoPago}
+                    className="bg-azulforte text-white font-bold
+                    rounded-full px-6 py-2 cursor-pointer"
+                >
+                    Conectar Mercado Pago
+                </button>
+            </section>
       </div>
     </main>
   );

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./VerificadorLogin";
 
-const API_URL = "http://localhost:4000/api";
+const API_URL = "/api";
 
 export default function MinhaConta() {
   const { user } = useAuth();

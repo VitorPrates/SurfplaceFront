@@ -88,18 +88,18 @@ export default function Produto() {
     });
 
   function comprarAgora() {
-    navigate("/checkout", {
-      state: {
-        lojaId,
-        itens: [
-          {
-            produtoId: produto._id,
-            quantidade
-          }
-        ]
-      }
+    if (!produto?._id) return;
+
+    const tentativa = crypto.randomUUID();
+
+    const parametros = new URLSearchParams({
+        produtoId: produto._id,
+        quantidade: String(quantidade),
+        tentativa
     });
-  }
+
+    navigate(`/checkout?${parametros.toString()}`);
+    }
 
   return (
     <main className="bg-azulultraleve min-h-[calc(100dvh-170px)] p-5">

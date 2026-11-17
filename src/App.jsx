@@ -20,6 +20,7 @@ import RotaProtegida from "./componentes/RotaProtegida";
 import MinhaConta from "./componentes/MinhaConta";
 import CriarLoja from "./componentes/CriarLoja";
 import Produto from './componentes/Produto';
+import Checkout from "./componentes/Checkout";
 
 export default function App() {
   // Coordenadas iniciais do centro do mapa (Exemplo: Avenida Paulista, São Paulo)
@@ -146,6 +147,32 @@ export default function App() {
               }
             />
 
+            <Route
+              path="/checkout"
+              element={
+                <>
+                <Header />
+                <Checkout />
+                <Footer />
+                </>
+              }
+              
+            />
+            <Route
+              path="/pagamento/retorno"
+              element={
+                <main className="p-8">
+                  <h1 className="text-2xl font-bold">
+                    Retorno do pagamento
+                  </h1>
+
+                  <p className="mt-3">
+                    O Surfplace ainda está verificando
+                    a situação do seu pagamento.
+                  </p>
+                </main>
+              }
+            />
 
           </Routes>
         </BrowserRouter>

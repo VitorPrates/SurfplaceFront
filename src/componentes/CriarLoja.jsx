@@ -5,7 +5,7 @@ import {
   useNavigate
 } from "react-router-dom";
 
-const API_URL = "http://localhost:4000/api";
+const API_URL = "/api";
 
 export default function CriarLoja() {
   const navigate = useNavigate();

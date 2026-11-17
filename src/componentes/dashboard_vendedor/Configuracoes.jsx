@@ -283,7 +283,7 @@ export default function Configuracoes() {
       </div>
     );
   }
-  function Vinculação com mercado pago feitaconectarMercadoPago() {
+  function conectarMercadoPago() {
   window.location.assign(
     "/api/mercadopago/conectar"
   );

@@ -1,6 +1,9 @@
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import {
+  useNavigate,
+  useSearchParams
+} from "react-router-dom";
 
 function formatarPreco(centavos) {
   return (centavos / 100).toLocaleString("pt-BR", {
@@ -10,80 +13,84 @@ function formatarPreco(centavos) {
 }
 
 export default function Checkout() {
-  const [params] = useSearchParams();
 
-  const produtoId = params.get("produtoId");
-  const quantidade = Number(params.get("quantidade"));
-  const tentativa = params.get("tentativa");
+    const navigate = useNavigate();
+    const compraEmAndamento = useRef(false);
 
-  const [resumo, setResumo] = useState(null);
-  const [carregando, setCarregando] = useState(true);
-  const [pagando, setPagando] = useState(false);
-  const [erro, setErro] = useState("");
+    const [params] = useSearchParams();
 
-  const tentativaValida =
-    typeof tentativa === "string" &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-      .test(tentativa);
+    const produtoId = params.get("produtoId");
+    const quantidade = Number(params.get("quantidade"));
+    const tentativa = params.get("tentativa");
 
-  useEffect(() => {
-    const controller = new AbortController();
+    const [resumo, setResumo] = useState(null);
+    const [carregando, setCarregando] = useState(true);
+    const [pagando, setPagando] = useState(false);
+    const [erro, setErro] = useState("");
 
-    async function carregarResumo() {
-      setCarregando(true);
-      setResumo(null);
-      setErro("");
+    const tentativaValida =
+        typeof tentativa === "string" &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(tentativa);
 
-      if (
-        !produtoId ||
-        !Number.isSafeInteger(quantidade) ||
-        quantidade < 1 ||
-        !tentativaValida
-      ) {
-        setErro("Dados da compra inválidos.");
-        setCarregando(false);
-        return;
-      }
+    useEffect(() => {
+        const controller = new AbortController();
 
-      try {
-        const query = new URLSearchParams({
-          produtoId,
-          quantidade: String(quantidade)
-        });
+        async function carregarResumo() {
+        setCarregando(true);
+        setResumo(null);
+        setErro("");
 
-        const resposta = await fetch(
-          `/api/checkout/resumo?${query}`,
-          {
-            credentials: "include",
-            signal: controller.signal
-          }
-        );
-
-        const dados = await resposta.json();
-
-        if (!resposta.ok) {
-          throw new Error(
-            dados.mensagem ||
-            "Não foi possível carregar o resumo."
-          );
+        if (
+            !produtoId ||
+            !Number.isSafeInteger(quantidade) ||
+            quantidade < 1 ||
+            !tentativaValida
+        ) {
+            setErro("Dados da compra inválidos.");
+            setCarregando(false);
+            return;
         }
 
-        setResumo(dados);
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          setErro(error.message);
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setCarregando(false);
-        }
-      }
-    }
+        try {
+            const query = new URLSearchParams({
+            produtoId,
+            quantidade: String(quantidade)
+            });
 
-    carregarResumo();
+            const resposta = await fetch(
+            `/api/checkout/resumo?${query}`,
+            {
+                credentials: "include",
+                signal: controller.signal
+            }
+            );
 
-    return () => controller.abort();
-  }, [produtoId, quantidade, tentativaValida]);
+            const dados = await resposta.json();
+
+            if (!resposta.ok) {
+            throw new Error(
+                dados.mensagem ||
+                "Não foi possível carregar o resumo."
+            );
+            }
+
+            setResumo(dados);
+        } catch (error) {
+            if (error.name !== "AbortError") {
+            setErro(error.message);
+            }
+        } finally {
+            if (!controller.signal.aborted) {
+            setCarregando(false);
+            }
+        }
+        }
+
+        carregarResumo();
+
+        return () => controller.abort();
+    }, [produtoId, quantidade, tentativaValida]);
 
   async function continuarPagamento() {
     if (!resumo || pagando || !tentativaValida) {
@@ -151,6 +158,74 @@ export default function Checkout() {
       setPagando(false);
     }
   }
+
+    async function finalizarCompraSimulada() {
+    if (
+        !resumo ||
+        !tentativaValida ||
+        compraEmAndamento.current
+    ) {
+        return;
+    }
+
+    compraEmAndamento.current = true;
+    setPagando(true);
+    setErro("");
+
+    try {
+        const resposta = await fetch(
+        "/api/checkout/simular",
+        {
+            method: "POST",
+            credentials: "include",
+            headers: {
+            "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+            produtoId,
+            quantidade,
+            chaveCheckout: tentativa
+            })
+        }
+        );
+
+        const dados = await resposta.json();
+
+        if (
+        !resposta.ok ||
+        !dados.sucesso ||
+        !dados.simulado ||
+        !dados.pedidoId
+        ) {
+        throw new Error(
+            dados.mensagem ||
+            "Não foi possível finalizar a compra simulada."
+        );
+        }
+
+        // Apenas após o backend confirmar
+        // a criação ou reutilização do pedido.
+        navigate("/compra/confirmacao", {
+        replace: true,
+        state: {
+            pedidoId: dados.pedidoId,
+            totalCentavos: dados.totalCentavos,
+            statusPagamento: dados.statusPagamento,
+            statusPedido: dados.statusPedido,
+            simulado: true
+        }
+        });
+
+    } catch (error) {
+        setErro(
+        error.message ||
+        "Erro ao finalizar a compra."
+        );
+    } finally {
+        compraEmAndamento.current = false;
+        setPagando(false);
+    }
+    }
 
   return (
     <main className="h-[calc(100dvh-170px)] bg-gray-50 p-5">
@@ -241,6 +316,40 @@ export default function Checkout() {
                   ? "Preparando pagamento..."
                   : "Continuar para pagamento"}
               </button>
+
+                <div className="mt-5 border-t pt-5">
+                <div className="rounded-lg bg-blue-50 p-4 mb-4">
+                    <p className="font-semibold text-blue-900">
+                    Modo de demonstração
+                    </p>
+
+                    <p className="text-sm text-blue-800 mt-1">
+                    Simule uma compra no Surfplace sem
+                    realizar nenhum pagamento real.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onClick={finalizarCompraSimulada}
+                    disabled={pagando}
+                    className="
+                    w-full
+                    rounded-lg
+                    bg-emerald-700
+                    px-5 py-3
+                    font-semibold
+                    text-white
+                    cursor-pointer
+                    disabled:opacity-50
+                    disabled:cursor-not-allowed
+                    "
+                >
+                    {pagando
+                    ? "Finalizando compra..."
+                    : "Finalizar compra simulada"}
+                </button>
+                </div>
 
             </section>
           </div>

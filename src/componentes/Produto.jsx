@@ -5,8 +5,8 @@ import {
   useParams
 } from "react-router-dom";
 
-const API_URL = "http://localhost:4000/api";
-const API_ORIGIN = "http://localhost:4000";
+const API_URL = "/api";
+const API_ORIGIN = "https://cusp-bargraph-overhung.ngrok-free.dev";
 
 export default function Produto() {
   const { lojaId, produtoId } = useParams();

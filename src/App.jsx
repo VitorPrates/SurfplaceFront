@@ -21,6 +21,7 @@ import MinhaConta from "./componentes/MinhaConta";
 import CriarLoja from "./componentes/CriarLoja";
 import Produto from './componentes/Produto';
 import Checkout from "./componentes/Checkout";
+import ConfirmacaoCompra from "./componentes/ConfirmacaoCompra";
 
 export default function App() {
   // Coordenadas iniciais do centro do mapa (Exemplo: Avenida Paulista, São Paulo)
@@ -173,7 +174,14 @@ export default function App() {
                 </main>
               }
             />
-
+            <Route
+              path="/compra/confirmacao"
+              element={<>
+                <Header />
+                <ConfirmacaoCompra />
+                <Footer />
+              </>}
+            />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

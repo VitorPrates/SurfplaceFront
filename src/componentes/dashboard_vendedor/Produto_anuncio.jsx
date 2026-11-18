@@ -19,7 +19,7 @@ export default function Produto_anuncio({ produto, onExcluir, excluindo, onEdita
 
   return (
     <div
-      className="border-2 w-238.75 h-25 rounded mt-4
+      className="border w-238 h-25 rounded mt-4
       grid grid-cols-[125px_436px_80px_150px_80px_80px]
       [&_span]:border
       [&_span]:text-center [&_span]:text-[24px]

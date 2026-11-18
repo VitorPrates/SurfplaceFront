@@ -292,161 +292,163 @@ export default function Configuracoes() {
   return (
     <main className="h-[calc(100dvh-170px)] bg-azulultraleve flex">
       <Navegando_dashboard />
-
-      <div className="flex-1 p-5 overflow-y-scroll">
-        <form
-          onSubmit={salvarEndereco}
-          className="max-w-250 mx-auto bg-white
-            border-2 rounded p-5"
-        >
-          <h2 className="text-2xl font-bold mb-4">
-            Configurações da loja
-          </h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            {/* DADOS DA LOJA */}
-            <section className="flex flex-col gap-4">
-              <div>
-                <label>CNPJ</label>
-                <input
-                  value={loja.cnpj}
-                  readOnly
-                  className="w-full border rounded-full
-                    px-3 h-9 bg-gray-200"
-                />
-              </div>
-
-              <div>
-                <label>Nome da loja</label>
-                <input
-                  value={loja.nome}
-                  readOnly
-                  className="w-full border rounded-full
-                    px-3 h-9 bg-gray-200"
-                />
-              </div>
-
-              <div>
-                <label>Descrição da loja</label>
-                <textarea
-                  value={loja.descricao || ""}
-                  readOnly
-                  className="w-full h-45 border rounded-lg
-                    bg-gray-200 p-3 resize-none"
-                />
-              </div>
-
-              <p className="text-xs text-gray-500">
-                Nome, descrição e imagem serão
-                editáveis em uma próxima etapa.
-              </p>
-            </section>
-
-            {/* ENDEREÇO */}
-            <section className="flex flex-col gap-3">
-              <h3 className="text-xl font-semibold">
-                Endereço da loja
-              </h3>
-
-              <div className="grid grid-cols-2 gap-3">
-                {campoInput("cep")}
-                {campoInput("numero")}
-              </div>
-
-              {campoInput("logradouro")}
-
-              {campoInput("bairro")}
-
-              <div className="grid grid-cols-[80px_1fr] gap-3">
-                {campoInput("uf")}
-                {campoInput("cidade")}
-              </div>
-
-              {campoInput("complemento")}
-
-              <button
-                type="button"
-                onClick={localizarEndereco}
-                disabled={localizando}
-                className="bg-azulleve text-white
-                  rounded-lg py-2 cursor-pointer
-                  disabled:opacity-50"
-              >
-                {localizando
-                  ? "Localizando..."
-                  : "Localizar endereço no mapa"}
-              </button>
-            </section>
-          </div>
-
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-2">
-              Confirme a localização da loja
-            </h3>
-
-            <MapaLocalizacao
-              ponto={ponto}
-              onChange={setPonto}
-            />
-          </div>
-
-          {mensagem && (
-            <p
-              role="status"
-              className={`mt-4 text-center ${
-                erro ? "text-red-600" : "text-green-600"
-              }`}
-            >
-              {mensagem}
-            </p>
-          )}
-
-          <div className="flex gap-5 mt-6">
-            <button
-              type="submit"
-              disabled={salvando}
-              className="flex-1 bg-azulforte
-                text-white rounded-full py-2
-                cursor-pointer disabled:opacity-50"
-            >
-              {salvando
-                ? "Salvando..."
-                : "Salvar alterações"}
-            </button>
-
-            <button
-              type="button"
-              onClick={carregarLoja}
-              disabled={salvando}
-              className="flex-1 bg-azulultraleve
-                rounded-full py-2 cursor-pointer"
-            >
-              Cancelar
-            </button>
-          </div>
-            
-        </form>
-        <section className="bg-white border rounded-lg p-4 mt-5">
-                <h3 className="text-xl font-bold">
-                    Pagamentos da loja
-                </h3>
-
-                <p className="text-sm text-gray-600 my-3">
-                    Conecte sua conta Mercado Pago para receber
-                    os pagamentos das vendas realizadas no Surfplace.
-                </p>
-
-                <button
-                    type="button"
-                    onClick={conectarMercadoPago}
-                    className="bg-azulforte text-white font-bold
-                    rounded-full px-6 py-2 cursor-pointer"
+        <div className="w-full h-[calc(100dvh-170px)] overflow-y-scroll">
+            <div className="flex-1 p-5 overflow-y-scroll">
+                <form
+                onSubmit={salvarEndereco}
+                className="max-w-250 mx-auto bg-white
+                    border-2 rounded p-5"
                 >
-                    Conectar Mercado Pago
-                </button>
-            </section>
-      </div>
+                <h2 className="text-2xl font-bold mb-4">
+                    Configurações da loja
+                </h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    {/* DADOS DA LOJA */}
+                    <section className="flex flex-col gap-4">
+                    <div>
+                        <label>CNPJ</label>
+                        <input
+                        value={loja.cnpj}
+                        readOnly
+                        className="w-full border rounded-full
+                            px-3 h-9 bg-gray-200"
+                        />
+                    </div>
+
+                    <div>
+                        <label>Nome da loja</label>
+                        <input
+                        value={loja.nome}
+                        readOnly
+                        className="w-full border rounded-full
+                            px-3 h-9 bg-gray-200"
+                        />
+                    </div>
+
+                    <div>
+                        <label>Descrição da loja</label>
+                        <textarea
+                        value={loja.descricao || ""}
+                        readOnly
+                        className="w-full h-45 border rounded-lg
+                            bg-gray-200 p-3 resize-none"
+                        />
+                    </div>
+
+                    <p className="text-xs text-gray-500">
+                        Nome, descrição e imagem serão
+                        editáveis em uma próxima etapa.
+                    </p>
+                    </section>
+
+                    {/* ENDEREÇO */}
+                    <section className="flex flex-col gap-3">
+                    <h3 className="text-xl font-semibold">
+                        Endereço da loja
+                    </h3>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        {campoInput("cep")}
+                        {campoInput("numero")}
+                    </div>
+
+                    {campoInput("logradouro")}
+
+                    {campoInput("bairro")}
+
+                    <div className="grid grid-cols-[80px_1fr] gap-3">
+                        {campoInput("uf")}
+                        {campoInput("cidade")}
+                    </div>
+
+                    {campoInput("complemento")}
+
+                    <button
+                        type="button"
+                        onClick={localizarEndereco}
+                        disabled={localizando}
+                        className="bg-azulleve text-white
+                        rounded-lg py-2 cursor-pointer
+                        disabled:opacity-50"
+                    >
+                        {localizando
+                        ? "Localizando..."
+                        : "Localizar endereço no mapa"}
+                    </button>
+                    </section>
+                </div>
+
+                <div className="mt-6">
+                    <h3 className="text-xl font-semibold mb-2">
+                    Confirme a localização da loja
+                    </h3>
+
+                    <MapaLocalizacao
+                    ponto={ponto}
+                    onChange={setPonto}
+                    />
+                </div>
+
+                {mensagem && (
+                    <p
+                    role="status"
+                    className={`mt-4 text-center ${
+                        erro ? "text-red-600" : "text-green-600"
+                    }`}
+                    >
+                    {mensagem}
+                    </p>
+                )}
+
+                <div className="flex gap-5 mt-6">
+                    <button
+                    type="submit"
+                    disabled={salvando}
+                    className="flex-1 bg-azulforte
+                        text-white rounded-full py-2
+                        cursor-pointer disabled:opacity-50"
+                    >
+                    {salvando
+                        ? "Salvando..."
+                        : "Salvar alterações"}
+                    </button>
+
+                    <button
+                    type="button"
+                    onClick={carregarLoja}
+                    disabled={salvando}
+                    className="flex-1 bg-azulultraleve
+                        rounded-full py-2 cursor-pointer"
+                    >
+                    Cancelar
+                    </button>
+                </div>
+                    
+                </form>
+                <section className="bg-white border rounded-lg p-4 mt-5">
+                        <h3 className="text-xl font-bold">
+                            Pagamentos da loja
+                        </h3>
+
+                        <p className="text-sm text-gray-600 my-3">
+                            Conecte sua conta Mercado Pago para receber
+                            os pagamentos das vendas realizadas no Surfplace.
+                        </p>
+
+                        <button
+                            type="button"
+                            onClick={conectarMercadoPago}
+                            className="bg-azulforte text-white font-bold
+                            rounded-full px-6 py-2 cursor-pointer"
+                        >
+                            Conectar Mercado Pago
+                        </button>
+                    </section>
+            </div>
+        </div>
+      
     </main>
   );
 }

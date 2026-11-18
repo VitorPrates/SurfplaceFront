@@ -6,7 +6,8 @@ const API_URL = "/api/pedidos";
 const ABAS = [
   { id: "pendentes", nome: "Pendentes" },
   { id: "prontos", nome: "Prontos" },
-  { id: "concluidos", nome: "Concluídos" }
+  { id: "concluidos", nome: "Concluídos" },
+  { id: "cancelados", nome: "Cancelados" }
 ];
 
 function formatarPreco(centavos) {
@@ -52,10 +53,13 @@ export default function Pedidos() {
   const [abaAtiva, setAbaAtiva] = useState("pendentes");
   const [pedidos, setPedidos] = useState([]);
   const [loja, setLoja] = useState(null);
+  
 
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
   const [atualizandoId, setAtualizandoId] = useState(null);
+  const [codigosRetirada, setCodigosRetirada] = useState({});
+  const [mensagem, setMensagem] = useState("");
 
   // Consulta somente os pedidos da loja autenticada
   const carregarPedidos = useCallback(async () => {
@@ -146,26 +150,170 @@ export default function Pedidos() {
     }
   }
 
+    async function cancelarPedido(pedidoId) {
+    if (atualizandoId) return;
+
+    const confirmar = window.confirm(
+        "Deseja cancelar este pedido? " +
+        "Os produtos serão devolvidos ao estoque."
+    );
+
+    if (!confirmar) return;
+
+    try {
+        setAtualizandoId(pedidoId);
+        setErro("");
+        setMensagem("");
+
+        const resposta = await fetch(
+        `/api/pedidos/${pedidoId}/cancelar`,
+        {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+            "Content-Type": "application/json"
+            }
+        }
+        );
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok || !dados.sucesso) {
+        throw new Error(
+            dados.mensagem ||
+            "Não foi possível cancelar o pedido."
+        );
+        }
+
+        // O backend já restaurou o estoque.
+        // Atualizamos somente a interface.
+        setPedidos(anteriores =>
+        anteriores.map(pedido =>
+            pedido._id === pedidoId
+            ? {
+                ...pedido,
+                statusPedido: "cancelado",
+                statusPagamento: "cancelado"
+                }
+            : pedido
+        )
+        );
+
+        setMensagem(
+        dados.reutilizado
+            ? "Este pedido já estava cancelado."
+            : "Pedido cancelado e estoque restaurado."
+        );
+
+    } catch (error) {
+        setErro(error.message);
+        await carregarPedidos();
+    } finally {
+        setAtualizandoId(null);
+    }
+    }
+
+async function confirmarRetirada(pedidoId) {
+  if (atualizandoId) return;
+
+  const codigo = (
+    codigosRetirada[pedidoId] || ""
+  ).trim().toUpperCase();
+
+  if (!/^[A-F0-9]{12}$/.test(codigo)) {
+    setErro(
+      "Informe um código de retirada válido " +
+      "com 12 caracteres."
+    );
+    return;
+  }
+
+  try {
+    setAtualizandoId(pedidoId);
+    setErro("");
+    setMensagem("");
+
+    const resposta = await fetch(
+      `/api/pedidos/${pedidoId}/confirmar-retirada`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ codigo })
+      }
+    );
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok || !dados.sucesso) {
+      throw new Error(
+        dados.mensagem ||
+        "Não foi possível confirmar a retirada."
+      );
+    }
+
+    // Usar o status confirmado pelo backend.
+    setPedidos(anteriores =>
+      anteriores.map(pedido =>
+        pedido._id === pedidoId
+          ? {
+              ...pedido,
+              ...dados.pedido
+            }
+          : pedido
+      )
+    );
+
+    // Limpar o código digitado.
+    setCodigosRetirada(anteriores => {
+      const novos = { ...anteriores };
+      delete novos[pedidoId];
+      return novos;
+    });
+
+    setMensagem(
+      "Retirada confirmada com sucesso!"
+    );
+
+  } catch (error) {
+    setErro(error.message);
+  } finally {
+    setAtualizandoId(null);
+  }
+}
+
   // Apenas pedidos com pagamento aprovado
   // participam das abas de preparação.
   const pedidosAprovados = pedidos.filter(
     pedido => pedido.statusPagamento === "aprovado"
   );
 
-  const pedidosFiltrados = pedidosAprovados.filter(pedido => {
+  const pedidosFiltrados = pedidos.filter(pedido => {
+    if (abaAtiva === "cancelados") {
+        return pedido.statusPedido === "cancelado";
+    }
+
+    // As outras abas mostram apenas
+    // pedidos com pagamento aprovado.
+    if (pedido.statusPagamento !== "aprovado") {
+        return false;
+    }
+
     if (abaAtiva === "pendentes") {
-      return [
+        return [
         "pendente",
         "em_preparacao"
-      ].includes(pedido.statusPedido);
+        ].includes(pedido.statusPedido);
     }
 
     if (abaAtiva === "prontos") {
-      return pedido.statusPedido === "pronto";
+        return pedido.statusPedido === "pronto";
     }
 
     return pedido.statusPedido === "concluido";
-  });
+    });
 
   const contagens = {
     pendentes: pedidosAprovados.filter(
@@ -180,6 +328,9 @@ export default function Pedidos() {
 
     concluidos: pedidosAprovados.filter(
       p => p.statusPedido === "concluido"
+    ).length,
+    cancelados: pedidos.filter(
+      pedido => pedido.statusPedido === "cancelado"
     ).length
   };
 
@@ -245,6 +396,16 @@ export default function Pedidos() {
                 {erro}
                 </div>
             )}
+            {mensagem && (
+            <div
+                role="status"
+                className="mb-5 rounded-lg border
+                border-green-200 bg-green-50
+                p-4 text-green-800"
+            >
+                {mensagem}
+            </div>
+            )}
 
             {carregando ? (
                 <p className="text-gray-500">
@@ -292,10 +453,29 @@ export default function Pedidos() {
                             )}
                         </p>
 
-                        {pedido.simulado && (
-                            <span className="text-xs text-blue-700">
-                            Compra simulada
-                            </span>
+                        {pedido.simulado === true &&
+                        ["pendente", "em_preparacao"].includes(
+                            pedido.statusPedido
+                        ) &&
+                        pedido.statusPagamento === "aprovado" && (
+                            <button
+                            type="button"
+                            onClick={() => cancelarPedido(pedido._id)}
+                            disabled={atualizandoId !== null}
+                            className="
+                                px-5 py-2
+                                rounded-lg
+                                border border-red-500
+                                text-red-600
+                                font-semibold
+                                hover:bg-red-50
+                                disabled:opacity-50
+                            "
+                            >
+                            {atualizandoId === pedido._id
+                                ? "Cancelando..."
+                                : "Cancelar pedido"}
+                            </button>
                         )}
                         </div>
 
@@ -400,18 +580,83 @@ export default function Pedidos() {
                         </button>
                         )}
 
-                        {pedido.statusPedido === "pronto" && (
-                        <p className="text-sm text-gray-500">
-                            Aguardando retirada do comprador
-                        </p>
+                        
+                        {pedido.statusPedido === "pronto" &&
+                        pedido.simulado === true && (
+                            <div className="w-full mt-4
+                            border-t pt-4">
+
+                            <h3 className="font-semibold mb-2">
+                                Confirmar retirada
+                            </h3>
+
+                            <p className="text-sm text-gray-500 mb-3">
+                                Solicite ao comprador o código de
+                                retirada e informe abaixo.
+                            </p>
+
+                            <div className="flex flex-wrap gap-2">
+
+                                <input
+                                type="text"
+                                value={
+                                    codigosRetirada[pedido._id] || ""
+                                }
+                                onChange={e =>
+                                    setCodigosRetirada(anteriores => ({
+                                    ...anteriores,
+                                    [pedido._id]:
+                                        e.target.value
+                                        .toUpperCase()
+                                        .replace(/[^A-F0-9]/g, "")
+                                        .slice(0, 12)
+                                    }))
+                                }
+                                placeholder="Código de retirada"
+                                maxLength={12}
+                                autoComplete="off"
+                                className="flex-1 min-w-48
+                                    border rounded-lg px-4 py-2
+                                    uppercase"
+                                />
+
+                                <button
+                                type="button"
+                                onClick={() =>
+                                    confirmarRetirada(pedido._id)
+                                }
+                                disabled={
+                                    atualizandoId !== null ||
+                                    !/^[A-F0-9]{12}$/.test(
+                                    codigosRetirada[pedido._id] || ""
+                                    )
+                                }
+                                className="bg-blue-700
+                                    text-white font-semibold
+                                    rounded-lg px-5 py-2
+                                    disabled:opacity-50"
+                                >
+                                {atualizandoId === pedido._id
+                                    ? "Confirmando..."
+                                    : "Confirmar retirada"}
+                                </button>
+
+                            </div>
+                            </div>
                         )}
+
 
                         {pedido.statusPedido === "concluido" && (
                         <p className="text-sm text-green-700">
                             Pedido finalizado
                         </p>
                         )}
-
+                        {pedido.statusPedido === "cancelado" && (
+                        <p className="text-sm font-medium text-red-600">
+                            Pedido cancelado
+                        </p>
+                        )}
+                        
                     </div>
 
                     </article>

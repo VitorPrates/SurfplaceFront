@@ -55,7 +55,8 @@ export default function Header()
                 <button
                     type="button"
                     onClick={sair}
-                    className="text-white font-bold cursor-pointer hover:underline"
+                    className="font-bold text-amarelodestaque
+                        text-[24px] hover:underline cursor-pointer"
                 >
                     Sair
                 </button>

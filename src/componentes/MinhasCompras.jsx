@@ -210,7 +210,7 @@ export default function MinhasCompras() {
   };
 
   return (
-    <main className="min-h-[75vh] bg-gray-50 p-5 md:p-8">
+    <main className="h-[calc(100dvh-170px)] bg-gray-50 p-5 md:p-8 overflow-y-auto">
       <div className="max-w-5xl mx-auto">
 
         {/* Cabeçalho */}

@@ -48,6 +48,10 @@ export default function Header()
                     Olá, {user.nome}!
                 </Link>
 
+                <Link to="/minhas-compras" className="font-bold text-amarelodestaque
+                        text-[24px] hover:underline">
+                    Minhas compras
+                </Link>
                 <button
                     type="button"
                     onClick={sair}
@@ -55,6 +59,7 @@ export default function Header()
                 >
                     Sair
                 </button>
+                
                 </>
             ) : (
                 <Link
